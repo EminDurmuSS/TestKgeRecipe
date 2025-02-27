@@ -1,10 +1,11 @@
+import gc
+import logging
+from contextlib import asynccontextmanager
+
+import torch
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
-from routers import recommend, unique_items, recipe_info
-import logging
-import gc
-import torch
+from routers import recipe_info, recommend, unique_items
 
 # Configure logging
 logging.basicConfig(
@@ -14,8 +15,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Import for model preloading
-from core.model_manager import model_manager
 from core.memory_utils import log_memory_usage
+from core.model_manager import model_manager
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -28,15 +30,16 @@ async def lifespan(app: FastAPI):
         log_memory_usage("after_preload")
     except Exception as e:
         logger.error(f"Error preloading model: {str(e)}", exc_info=True)
-    
+
     yield  # This is where FastAPI serves requests
-    
+
     # Shutdown: Clean up resources
     logger.info("Shutting down, cleaning up resources...")
     # Clear memory
     gc.collect()
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
+
 
 app = FastAPI(
     title="Food Recommendation API",
@@ -58,12 +61,15 @@ app.include_router(recommend.router, tags=["recommendations"])
 app.include_router(unique_items.router, tags=["ingredients"])
 app.include_router(recipe_info.router, tags=["recipes"])
 
+
 @app.get("/", tags=["health"])
 def root():
     """Health check endpoint"""
     return {"message": "Hello! This is the KG-based Food Recommendation API."}
 
+
 if __name__ == "__main__":
     import uvicorn
+
     logger.info("Starting Food Recommendation API")
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

@@ -4,22 +4,9 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
     environment:
       - ENV=production
-      - PYTHONUNBUFFERED=1
-      - PYTHONMALLOC=malloc
-      - MALLOC_TRIM_THRESHOLD_=65536
     volumes:
       - ./backend/data:/app/data
       - ./backend/embedding:/app/embedding
-    restart: always
-    deploy:
-      resources:
-        limits:
-          memory: 6G
-        reservations:
-          memory: 2G
-    tmpfs:
-      - /dev/shm:size=1G
+    restart: on-failure
