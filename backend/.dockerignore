@@ -1,0 +1,23 @@
+# Python cache dosyaları
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Sanal environment klasörleri
+env/
+.venv/
+venv/
+
+# IDE veya işletim sistemi ile ilgili gereksiz dosyalar
+.DS_Store
+Thumbs.db
+
+# Log dosyaları
+*.log
+
+# Dockerfile'ı ignore ETMEYİN!
+# Dockerfile
+
+# Eğer büyük data/model dosyaları var ve kopyalanmasın istiyorsanız:
+# embedding/*.pkl
+# data/*

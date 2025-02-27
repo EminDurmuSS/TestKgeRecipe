@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Recipe Recommender</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link href="styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Header Section -->
+    <header class="app-header">
+      <div class="container">
+        <div class="d-flex align-items-center">
+          <i class="fas fa-utensils header-icon"></i>
+          <div>
+            <h1 class="header-title">Smart Recipe Recommender</h1>
+            <p class="header-subtitle">
+              Find your perfect recipe with AI-powered recommendations
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container my-4">
+      <!-- Selected Criteria Summary -->
+      <div id="criteria-summary" class="mb-4" style="display: none">
+        <h3 class="criteria-title">
+          <i class="fas fa-filter"></i> Your Search Criteria
+        </h3>
+        <div class="row">
+          <div class="col-md-6">
+            <div id="cooking-criteria" class="criteria-group">
+              <h4><i class="fas fa-fire"></i> Cooking Method</h4>
+              <div id="cooking-method-tags" class="criteria-tags"></div>
+            </div>
+            <div id="cuisine-criteria" class="criteria-group">
+              <h4><i class="fas fa-globe-americas"></i> Cuisine</h4>
+              <div id="cuisine-region-tags" class="criteria-tags"></div>
+            </div>
+            <div id="diet-criteria" class="criteria-group">
+              <h4><i class="fas fa-carrot"></i> Diet Types</h4>
+              <div id="diet-types-tags" class="criteria-tags"></div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div id="meal-criteria" class="criteria-group">
+              <h4><i class="fas fa-clock"></i> Meal Types</h4>
+              <div id="meal-types-tags" class="criteria-tags"></div>
+            </div>
+            <div id="ingredient-criteria" class="criteria-group">
+              <h4><i class="fas fa-apple-alt"></i> Ingredients</h4>
+              <div id="ingredients-tags" class="criteria-tags"></div>
+            </div>
+            <div id="nutrition-criteria" class="criteria-group">
+              <h4><i class="fas fa-heartbeat"></i> Nutrition</h4>
+              <div id="nutrition-tags" class="criteria-tags"></div>
+            </div>
+          </div>
+        </div>
+        <div class="criteria-actions mt-3">
+          <button class="btn btn-outline-secondary btn-sm" id="modify-criteria">
+            <i class="fas fa-pencil-alt"></i> Modify Criteria
+          </button>
+          <button class="btn btn-outline-danger btn-sm" id="clear-criteria">
+            <i class="fas fa-trash-alt"></i> Clear All
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Search Form -->
+      <div class="card main-card" id="search-form-card">
+        <div class="card-header">
+          <h2 class="card-title">
+            <i class="fas fa-search"></i> Find Your Perfect Recipe
+          </h2>
+        </div>
+        <div class="card-body">
+          <form id="recipe-form" class="row g-3">
+            <!-- Accordion for categories -->
+            <div class="accordion" id="search-accordion">
+              <!-- Cooking & Cuisine Section -->
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button
+                    class="accordion-button"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#cooking-cuisine-collapse"
+                    aria-expanded="true"
+                  >
+                    <i class="fas fa-fire me-2"></i> Cooking Method & Cuisine
+                  </button>
+                </h3>
+                <div
+                  id="cooking-cuisine-collapse"
+                  class="accordion-collapse collapse show"
+                  data-bs-parent="#search-accordion"
+                >
+                  <div class="accordion-body">
+                    <div class="row g-3">
+                      <!-- Cooking Method -->
+                      <div class="col-md-6">
+                        <label for="cooking-method" class="form-label">
+                          <i class="fas fa-fire-burner me-2"></i> Cooking Method
+                        </label>
+                        <select
+                          class="form-select"
+                          id="cooking-method"
+                          multiple
+                          size="5"
+                        >
+                          <option value="oven">Oven (most common)</option>
+                          <option value="pan">Pan</option>
+                          <option value="pot">Pot</option>
+                          <option value="microwave">Microwave</option>
+                          <option value="air fryer">Air Fryer</option>
+                          <option value="barbecue">Barbecue</option>
+                          <option value="bread machine">Bread Machine</option>
+                          <option value="no cook">No Cook</option>
+                          <option value="pressure cooker">
+                            Pressure Cooker
+                          </option>
+                        </select>
+                        <small class="text-muted">
+                          <i class="fas fa-info-circle me-1"></i> Hold Ctrl/Cmd
+                          to select multiple methods
+                        </small>
+                      </div>
+
+                      <!-- Cuisine Region -->
+                      <div class="col-md-6">
+                        <label for="cuisine-region" class="form-label">
+                          <i class="fas fa-globe-americas me-2"></i> Cuisine
+                          Region
+                        </label>
+                        <select
+                          class="form-select"
+                          id="cuisine-region"
+                          multiple
+                          size="6"
+                        >
+                          <option value="North America">
+                            North America (most common)
+                          </option>
+                          <option value="Global">Global</option>
+                          <option value="Mediterranean Europe">
+                            Mediterranean Europe
+                          </option>
+                          <option value="Northern/Western Europe">
+                            Northern/Western Europe
+                          </option>
+                          <option value="Latin America">Latin America</option>
+                          <option value="East Asia">East Asia</option>
+                          <option value="South Asia">South Asia</option>
+                          <option value="Southeast Asia">Southeast Asia</option>
+                          <option value="Middle East & Anatolia">
+                            Middle East & Anatolia
+                          </option>
+                          <option value="Oceania">Oceania</option>
+                          <option value="Eastern Europe & Eurasia">
+                            Eastern Europe & Eurasia
+                          </option>
+                          <option value="Caribbean">Caribbean</option>
+                          <option value="Sub-Saharan Africa">
+                            Sub-Saharan Africa
+                          </option>
+                          <option value="East Asia, Southeast Asia">
+                            East Asia & Southeast Asia
+                          </option>
+                          <option
+                            value="Mediterranean Europe, Middle East & Anatolia"
+                          >
+                            Mediterranean Europe & Middle East
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Diet & Meal Types Section -->
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#diet-meal-collapse"
+                    aria-expanded="false"
+                  >
+                    <i class="fas fa-utensils me-2"></i> Diet & Meal Types
+                  </button>
+                </h3>
+                <div
+                  id="diet-meal-collapse"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#search-accordion"
+                >
+                  <div class="accordion-body">
+                    <div class="row g-3">
+                      <!-- Diet Types -->
+                      <div class="col-md-6">
+                        <label for="diet-types" class="form-label">
+                          <i class="fas fa-carrot me-2"></i> Diet Types
+                        </label>
+                        <select
+                          class="form-select"
+                          id="diet-types"
+                          multiple
+                          size="6"
+                        >
+                          <option value="Standard">
+                            Standard (most common)
+                          </option>
+                          <option value="Vegetarian">Vegetarian</option>
+                          <option value="Vegan">Vegan</option>
+                          <option value="Paleo">Paleo</option>
+                          <option value="Egg Free">Egg Free</option>
+                          <option value="Lactose Free">Lactose Free</option>
+                          <option value="Vegan,Egg Free">
+                            Vegan & Egg Free
+                          </option>
+                          <option value="Vegetarian,Egg Free">
+                            Vegetarian & Egg Free
+                          </option>
+                          <option value="Egg Free,Lactose Free">
+                            Egg & Lactose Free
+                          </option>
+                          <option value="Vegan,Lactose Free">
+                            Vegan & Lactose Free
+                          </option>
+                          <option value="Vegetarian,Lactose Free">
+                            Vegetarian & Lactose Free
+                          </option>
+                        </select>
+                      </div>
+
+                      <!-- Meal Types -->
+                      <div class="col-md-6">
+                        <label for="meal-types" class="form-label">
+                          <i class="fas fa-clock me-2"></i> Meal Types
+                        </label>
+                        <select
+                          class="form-select"
+                          id="meal-types"
+                          multiple
+                          size="6"
+                        >
+                          <option value="dinner">Dinner</option>
+                          <option value="dessert">Dessert</option>
+                          <option value="starter">Starter</option>
+                          <option value="brunch">Brunch</option>
+                          <option value="breakfast">Breakfast</option>
+                          <option value="lunch">Lunch</option>
+                          <option value="drink">Drink</option>
+                          <option value="snack">Snack</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ingredients Section -->
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#ingredients-collapse"
+                    aria-expanded="false"
+                  >
+                    <i class="fas fa-egg me-2"></i> Ingredients
+                  </button>
+                </h3>
+                <div
+                  id="ingredients-collapse"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#search-accordion"
+                >
+                  <div class="accordion-body">
+                    <div class="ingredient-search-container mb-3">
+                      <div class="input-group">
+                        <span class="input-group-text"
+                          ><i class="fas fa-search"></i
+                        ></span>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="ingredient-search"
+                          placeholder="Search ingredients..."
+                        />
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                        <label for="ingredients" class="form-label">
+                          <i class="fas fa-apple-alt me-2"></i> Select
+                          Ingredients
+                        </label>
+                        <select
+                          class="form-select"
+                          id="ingredients"
+                          multiple
+                          size="6"
+                        >
+                          <!-- Populated dynamically -->
+                        </select>
+                        <small class="text-muted">
+                          <i class="fas fa-info-circle me-1"></i> Selected
+                          ingredients will be prioritized in recipe
+                          recommendations
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Nutrition Section -->
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#nutrition-collapse"
+                    aria-expanded="false"
+                  >
+                    <i class="fas fa-heartbeat me-2"></i> Nutrition Preferences
+                  </button>
+                </h3>
+                <div
+                  id="nutrition-collapse"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#search-accordion"
+                >
+                  <div class="accordion-body">
+                    <div class="row g-3">
+                      <!-- First Row -->
+                      <div class="col-md-4">
+                        <label class="form-label">
+                          <i class="fas fa-drumstick-bite me-2"></i> Protein
+                          Level
+                        </label>
+                        <select
+                          class="form-select"
+                          id="protein-level"
+                          multiple
+                          size="3"
+                        >
+                          <option value="Low Protein">Low Protein</option>
+                          <option value="Medium Protein">Medium Protein</option>
+                          <option value="High Protein">High Protein</option>
+                        </select>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">
+                          <i class="fas fa-bread-slice me-2"></i> Carb Level
+                        </label>
+                        <select
+                          class="form-select"
+                          id="carb-level"
+                          multiple
+                          size="3"
+                        >
+                          <option value="Low Carb">Low Carb</option>
+                          <option value="Medium Carb">Medium Carb</option>
+                          <option value="High Carb">High Carb</option>
+                        </select>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">
+                          <i class="fas fa-cheese me-2"></i> Fat Level
+                        </label>
+                        <select
+                          class="form-select"
+                          id="fat-level"
+                          multiple
+                          size="3"
+                        >
+                          <option value="Low Fat">Low Fat</option>
+                          <option value="Medium Fat">Medium Fat</option>
+                          <option value="High Fat">High Fat</option>
+                        </select>
+                      </div>
+                      <!-- Second Row -->
+                      <div class="col-md-4">
+                        <label class="form-label">
+                          <i class="fas fa-fire me-2"></i> Calorie Level
+                        </label>
+                        <select
+                          class="form-select"
+                          id="calorie-level"
+                          multiple
+                          size="3"
+                        >
+                          <option value="Low Calorie">Low Calorie</option>
+                          <option value="Medium Calorie">Medium Calorie</option>
+                          <option value="High Calorie">High Calorie</option>
+                        </select>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">
+                          <i class="fas fa-heartbeat me-2"></i> Cholesterol
+                          Level
+                        </label>
+                        <select
+                          class="form-select"
+                          id="cholesterol-level"
+                          multiple
+                          size="3"
+                        >
+                          <option value="Low Cholesterol">
+                            Low Cholesterol
+                          </option>
+                          <option value="Medium Cholesterol">
+                            Medium Cholesterol
+                          </option>
+                          <option value="High Cholesterol">
+                            High Cholesterol
+                          </option>
+                        </select>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label">
+                          <i class="fas fa-cookie-bite me-2"></i> Sugar Level
+                        </label>
+                        <select
+                          class="form-select"
+                          id="sugar-level"
+                          multiple
+                          size="3"
+                        >
+                          <option value="Low Sugar">Low Sugar</option>
+                          <option value="Medium Sugar">Medium Sugar</option>
+                          <option value="High Sugar">High Sugar</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Fine-tuning Options -->
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#fine-tuning-collapse"
+                    aria-expanded="false"
+                  >
+                    <i class="fas fa-sliders-h me-2"></i> Fine-tune Your Search
+                  </button>
+                </h3>
+                <div
+                  id="fine-tuning-collapse"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#search-accordion"
+                >
+                  <div class="accordion-body">
+                    <!-- Preference Weights -->
+                    <h4 class="section-title">Preference Importance</h4>
+                    <div class="row g-3 mb-4">
+                      <div class="col-md-6">
+                        <div class="weight-container">
+                          <div class="weight-label">
+                            <i class="fas fa-fire-burner me-2"></i> Cooking
+                            Method
+                            <span class="weight-value" id="weight-cooking-value"
+                              >1.0</span
+                            >
+                          </div>
+                          <input
+                            type="range"
+                            class="form-range"
+                            id="weight-cooking"
+                            min="0"
+                            max="5"
+                            step="0.1"
+                            value="1"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="weight-container">
+                          <div class="weight-label">
+                            <i class="fas fa-globe-americas me-2"></i> Cuisine
+                            <span class="weight-value" id="weight-cuisine-value"
+                              >1.0</span
+                            >
+                          </div>
+                          <input
+                            type="range"
+                            class="form-range"
+                            id="weight-cuisine"
+                            min="0"
+                            max="5"
+                            step="0.1"
+                            value="1"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="weight-container">
+                          <div class="weight-label">
+                            <i class="fas fa-carrot me-2"></i> Diet
+                            <span class="weight-value" id="weight-diet-value"
+                              >1.0</span
+                            >
+                          </div>
+                          <input
+                            type="range"
+                            class="form-range"
+                            id="weight-diet"
+                            min="0"
+                            max="5"
+                            step="0.1"
+                            value="1"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="weight-container">
+                          <div class="weight-label">
+                            <i class="fas fa-apple-alt me-2"></i> Ingredients
+                            <span
+                              class="weight-value"
+                              id="weight-ingredients-value"
+                              >1.0</span
+                            >
+                          </div>
+                          <input
+                            type="range"
+                            class="form-range"
+                            id="weight-ingredients"
+                            min="0"
+                            max="5"
+                            step="0.1"
+                            value="1"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Results Configuration -->
+                    <h4 class="section-title">Results Configuration</h4>
+                    <div class="row g-3">
+                      <div class="col-md-6">
+                        <div class="weight-container">
+                          <div class="weight-label">
+                            <i class="fas fa-list-ol me-2"></i> Number of
+                            Results
+                            <span class="weight-value" id="num-results-value"
+                              >5</span
+                            >
+                          </div>
+                          <input
+                            type="range"
+                            class="form-range"
+                            id="num-results"
+                            min="1"
+                            max="20"
+                            value="5"
+                          />
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-check form-switch mt-4">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="flexible-matching"
+                          />
+                          <label
+                            class="form-check-label"
+                            for="flexible-matching"
+                          >
+                            <i class="fas fa-random me-2"></i> Flexible Matching
+                            <small class="d-block text-muted"
+                              >Show more varied results</small
+                            >
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="col-12 text-center mt-4">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-search me-2"></i> Find Recipes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div id="results-section" class="mt-4" style="display: none">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fas fa-list-check me-2"></i> Recommended Recipes
+            </h3>
+          </div>
+          <div class="card-body">
+            <div id="recipe-list" class="recipe-results mt-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recipe Details Modal -->
+    <div class="modal fade" id="recipe-modal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">
+              <i class="fas fa-utensils me-2"></i> Recipe Details
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body" id="recipe-details">
+            <!-- Recipe details will be populated here -->
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
